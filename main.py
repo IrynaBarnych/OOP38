@@ -1,28 +1,54 @@
 import json
-#СЕРІАЛІЗАЦІЯ
-data = {"name": "Varia", "age": 30, "city": ["New York", "Vinytsia"]}
-json_string = json.dumps(data)
-print(json_string)
-#десеріалізація
-json_string = json.loads(json_string)
-print(data)
-#запис у файли
-with open('data.json', "w") as file:
-    json.dump(data, file)
-#зчитування
-with open("data.json", 'r') as file:
-    loadet_data = json.load(file)
-    print(loadet_data)
-#можна серіалізація списку
-my_list = [1, 2, 3, 4, 5, "apple"]
-json_string = json.dumps(my_list)
-print(json_string)
+import time
 
-with open('my_list.json', "w") as file:
-    json.dump(my_list, file)
+def start_timer():
+    start_time = time.time()
+    print("Таймер запущено!")
+    return start_time
 
-# Параметр indent для красивого відображення JSON
-data = {1: "John", 2: 30, 3: "New York"}
-json_string = json.dumps(data, indent=10, sort_keys = True)
-print(json_string)
+def load_timer_state():
+    try:
+        with open('timer_state.json', 'r') as file:
+            timer_state = json.load(file)
+    except FileNotFoundError:
+        timer_state = {"start_time": 0, "elapsed_time": 0}
+    return timer_state
 
+
+def save_timer_state(timer_state):
+    with open('timer_state.json', 'w') as file:
+        json.dump(timer_state, file)
+
+
+#стан таймера
+timer = load_timer_state()
+start_time = timer["start_time"]
+elapsed_time = timer["elapsed_time"]
+
+# Якщо таймер був запущений, продовжити відлік
+if start_time != 0:
+    elapsed_time += time.time() - start_time
+
+# Основний цикл програми
+while True:
+    print("\nМеню:")
+    print("1. Запустити/перезапустити таймер")
+    print("2. Вивести час виконання")
+    print("3. Вийти з програми")
+
+    choice = input("Виберіть опцію: ")
+
+    if choice == "1":
+        start_time = start_timer()
+        timer["start_time"] = start_time
+    elif choice == "2":
+        current_elapsed_time = elapsed_time
+        if start_time != 0:
+            current_elapsed_time += time.time() - start_time
+        print("Час виконання", current_elapsed_time)
+    elif choice == "3":
+        timer["elapsed_time"] = elapsed_time
+        save_timer_state(timer)
+        break
+    else:
+        print("Error")
