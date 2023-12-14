@@ -2,38 +2,56 @@
 # До вже реалізованого класу «Дріб» додайте можливість стиснення та розпакування даних з
 # використанням json та pickle.
 
-class Fraction:
-    def __init__(self, numerator, denominator):
-        self.numerator = numerator
-        self.denominator = denominator
+class Watch:
+    def __init__(self, model, manufacturer, year, price, watch_type):
+        self.model = model
+        self.manufacturer = manufacturer
+        self.year = year
+        self.price = price
+        self.watch_type = watch_type
 
-    def __str__(self):
-        return f"{self.numerator}/{self.denominator}"
+    def get_model(self):
+        return self.model
 
-    def __add__(self, other):
-        new_numerator = self.numerator * other.denominator + other.numerator * self.denominator
-        new_denominator = self.denominator * other.denominator #спільний знаменник
-        return Fraction(new_numerator, new_denominator)
+    def get_manufacturer(self):
+        return self.manufacturer
+
+    def get_year(self):
+        return self.year
+
+    def get_price(self):
+        return self.price
+
+    def get_watch_type(self):
+        return self.watch_type
 
     def __sub__(self, other):
-        new_numerator = self.numerator * other.denominator - other.numerator * self.denominator
-        new_denominator = self.denominator * other.denominator #спільний знаменник
-        return Fraction(new_numerator, new_denominator)
+        return abs(self.price - other.price)
 
-    def __mul__(self, other):
-        new_numerator = self.numerator * other.numerator
-        new_denominator = self.denominator * other.denominator
-        return Fraction(new_numerator, new_denominator)
+    def is_same_watch_type(self, other):
+        return self.watch_type == other.watch_type
 
-    def __truediv__(self, other):
-        other.denominator, other.numerator = other.numerator, other.denominator
-        return Fraction.__mul__(self, other)
+watch1 = Watch("Чип", "Швейцарія", 2020, 200, "Ручний")
+watch2 = Watch("Дейл", "Китай", 2022, 300, "Настінний")
 
+# Годинник 1
+print(f"Модель: {watch1.get_model()}")
+print(f"Виробник: {watch1.get_manufacturer()}")
+print(f"Рік випуску: {watch1.get_year()}")
+print(f"Цена: {watch1.get_price()}")
+print(f"Вид годинника: {watch1.get_watch_type()}")
 
-fraction1 = Fraction(4, 7)
-fraction2 = Fraction(5, 8)
+# Годинник 2
+print(f"Модель: {watch2.get_model()}")
+print(f"Виробник: {watch2.get_manufacturer()}")
+print(f"Рік випуску: {watch2.get_year()}")
+print(f"Цена: {watch2.get_price()}")
+print(f"Вид годинника: {watch2.get_watch_type()}")
 
-print(fraction1 + fraction2)
-print(fraction1 - fraction2)
-print(fraction1 * fraction2)
-print(fraction1 / fraction2)
+price_difference = watch1 - watch2
+print(f"Різниця в ціні: {price_difference} євро")
+
+if watch1.is_same_watch_type(watch2):
+    print("У годинників однаковий тип.")
+else:
+    print("У годинників різний тип.")
