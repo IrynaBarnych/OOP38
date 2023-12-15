@@ -3,6 +3,10 @@
 # мож-ливість стиснення та розпакування даних з
 # використан-ням json та pickle.
 
+import pickle
+import gzip
+import json
+
 class Watch:
     def __init__(self, model, manufacturer, year, price, watch_type):
         self.model = model
@@ -32,27 +36,67 @@ class Watch:
     def is_same_watch_type(self, other):
         return self.watch_type == other.watch_type
 
+    def to_dict(self):
+        return {
+            'model': self.get_model(),
+            'manufacturer': self.get_manufacturer(),
+            'year': self.get_year(),
+            'price': self.get_price(),
+            'watch_type': self.get_watch_type()
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            model=data['model'],
+            manufacturer=data['manufacturer'],
+            year=data['year'],
+            price=data['price'],
+            watch_type=data['watch_type']
+        )
+
+# Створення об'єктів
 watch1 = Watch("Чип", "Швейцарія", 2020, 200, "Ручний")
 watch2 = Watch("Дейл", "Китай", 2022, 300, "Настінний")
 
-# Годинник 1
-print(f"Модель: {watch1.get_model()}")
-print(f"Виробник: {watch1.get_manufacturer()}")
-print(f"Рік випуску: {watch1.get_year()}")
-print(f"Цена: {watch1.get_price()}")
-print(f"Вид годинника: {watch1.get_watch_type()}")
+# Збереження об'єкта у файл з використанням pickle
+with open('object_file.pickle', 'wb') as file:
+    pickle.dump(watch1, file)
 
-# Годинник 2
-print(f"Модель: {watch2.get_model()}")
-print(f"Виробник: {watch2.get_manufacturer()}")
-print(f"Рік випуску: {watch2.get_year()}")
-print(f"Цена: {watch2.get_price()}")
-print(f"Вид годинника: {watch2.get_watch_type()}")
+# Стиснення файлу з об'єктом за допомогою gzip
+with open('object_file.pickle', 'rb') as file:
+    data = file.read()
+    with gzip.open('compressed_object_file.gz', 'wb') as compressed_file:
+        compressed_file.write(data)
+    print("Файл стиснуто.")
 
-price_difference = watch1 - watch2
-print(f"Різниця в ціні: {price_difference} євро")
+# Завантаження стиснутого файлу, розпакування та завантаження об'єкта з файлу
+with gzip.open('compressed_object_file.gz', 'rb') as compressed_file:
+    uncompressed_data = compressed_file.read()
+    with open('uncompressed_object_file.pickle', 'wb') as file:
+        file.write(uncompressed_data)
+    print("Файл розпаковано.")
 
-if watch1.is_same_watch_type(watch2):
-    print("У годинників однаковий тип.")
-else:
-    print("У годинників різний тип.")
+# Використання pickle для завантаження об'єкта з розпакованого файлу
+with open('uncompressed_object_file.pickle', 'rb') as file:
+    loaded_watch = pickle.load(file)
+
+# Збереження вкладеної структури у файл JSON
+nested_data = {'fraction1': watch1.to_dict(), 'fraction2': watch2.to_dict()}
+
+with open('nested_data.json', 'w') as file:
+    json.dump(nested_data, file, indent=4)
+
+# Завантаження вкладеної структури з файлу JSON для перевірки
+with open('nested_data.json', 'r') as file:
+    loaded_data = json.load(file)
+
+loaded_watch1 = Watch.from_dict(loaded_data['fraction1'])
+loaded_watch2 = Watch.from_dict(loaded_data['fraction2'])
+
+# Перевірка виведення інформації про завантажений об'єкт
+print(f"Модель: {loaded_watch1.get_model()}")
+print(f"Виробник: {loaded_watch1.get_manufacturer()}")
+print(f"Рік випуску: {loaded_watch1.get_year()}")
+print(f"Ціна: {loaded_watch1.get_price()}")
+print(f"Вид годинника: {loaded_watch1.get_watch_type()}")
