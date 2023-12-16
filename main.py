@@ -1,50 +1,36 @@
-# Завдання 1
-# Створіть два окремих "мікросервіси" (дві окремі
-# програми). Одна програма створює та експортує дані у
-# форматі JSON, а інша програма завантажує та обробляє ці
-# дані. Це може бути, наприклад, система, яка створює та
-# обробляє замовлення.
+# Завдання 2
+# Створіть програму для проведення опитування або
+# анкетування. Зберігайте відповіді користувачів у форматі
+# JSON файлу. Кожне опитування може бути окремим
+# об'єктом у файлі JSON, а відповіді кожного користувача -
+# списком значень.
 
 
 import json
 
+class Anketa:
+    def __init__(self, name, age, hobby, location):
+        self.name = name
+        self.age = age
+        self.hobby = hobby
+        self.location = location
 
-class OrderCreator:
-    def create_order(self, order_id, product_name, quantity):
-        order_data = {
-            "order_id": order_id,
-            "product_name": product_name,
-            "quantity": quantity
-        }
-        return json.dumps(order_data)
+def save_survey_to_json(user, filename):
+    try:
+        with open(filename, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = []
 
+    data.append(user.__dict__)
 
-if __name__ == "__main__":
-    order_creator = OrderCreator()
+    with open(filename, 'w') as file:
+        json.dump(data, file, indent=2)
 
-    order_id = int(input("Введіть номер замовлення: "))
-    product_name = input("Введіть назву продукту: ")
-    quantity = int(input("Введіть кількість: "))
+# Example usage
+user_survey = Anketa("Dmytro", 30, "fishing", "Kyiv")
+filename = "survey_results.json"
+save_survey_to_json(user_survey, filename)
 
-    order_data = order_creator.create_order(order_id, product_name, quantity)
+print(f"Дякуємо за участь у опитуванні! Результати збережено у файлі {filename}.")
 
-    with open('order.json', 'w') as file:
-        file.write(order_data)
-
-    print("Замовлення створено та збережено у файл order.json.")
-
-import json
-
-class OrderProcessor:
-    def process_order(self, order_json):
-        order_data = json.loads(order_json)
-        print("Обробка замовлення:")
-        for key, value in order_data.items():
-            print(f"{key}: {value}")
-
-if __name__ == "__main__":
-    with open('order.json', 'r') as file:
-        loaded_order_json = file.read()
-
-    order_processor = OrderProcessor()
-    order_processor.process_order(loaded_order_json)
