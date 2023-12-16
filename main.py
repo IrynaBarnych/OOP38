@@ -78,5 +78,6 @@ with open('nested_data.json', 'r') as file:
     loaded_data = json.load(file)
     print(loaded_data)
 
+
 # Виведення інформації про завантажений об'єкт
 loaded_obj.display_info()
