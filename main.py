@@ -27,10 +27,9 @@ def save_survey_to_json(user, filename):
     with open(filename, 'w') as file:
         json.dump(data, file, indent=2)
 
-# Example usage
-user_survey = Anketa("Dmytro", 30, "fishing", "Kyiv")
+user = Anketa("Dmytro", 30, "fishing", "Kyiv")
 filename = "survey_results.json"
-save_survey_to_json(user_survey, filename)
+save_survey_to_json(user, filename)
 
 print(f"Дякуємо за участь у опитуванні! Результати збережено у файлі {filename}.")
 
