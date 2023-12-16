@@ -37,8 +37,6 @@ class Fraction:
     def display_info(self):
         print(f"Дріб: {self.numerator}/{self.denominator}")
 
-# Решта коду залишається незмінною
-
 fraction1 = Fraction(4, 7)
 fraction2 = Fraction(5, 8)
 
